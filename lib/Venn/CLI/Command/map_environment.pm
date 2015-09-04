@@ -1,0 +1,78 @@
+package Venn::CLI::Command::map_environment;
+
+=head1 NAME
+
+Venn::CLI::Command::map_environment
+
+=head1 DESCRIPTION
+
+Map an environment to providers.
+
+=head1 AUTHOR
+
+Venn Engineering
+
+Josh Arenberg, Norbert Csongradi, Ryan Kupfer, Hai-Long Nguyen
+
+=head1 LICENSE
+
+Copyright 2013,2014,2015 Morgan Stanley
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=cut
+
+use v5.14;
+
+use Mouse;
+extends qw(Venn::CLI::Command);
+with qw(
+    Venn::CLI::Role::GenericVerb
+    Venn::CLI::Role::Provider
+    Venn::CLI::Role::Mapping
+);
+
+sub run {
+    my ($self, $environment) = @_;
+
+    return $self->handle_all('map', 'environment', $environment);
+}
+
+no Mouse;
+__PACKAGE__->meta->make_immutable;
+
+__DATA__
+
+=head1 NAME
+
+Venn::CLI::Command::map_environment - Maps an environment to providers
+
+=head1 SYNOPSIS
+
+$ venn map_environment <environment> [--option val ...]
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--provider_type>
+
+Provider type (cpu, ram, ...)
+
+Must be used in conjunction with --primary_field
+
+=item B<--primary_field>
+
+The primary field of the given provider_type (e.g. if ram, then the name of the cluster)
+
+Must be used in conjunction with --provider_type
