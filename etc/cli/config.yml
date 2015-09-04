@@ -1,0 +1,46 @@
+---
+rest_timeout: 60
+api_version: 'v1'
+exit_code_mappings: # NOTE: To implement an exit code mapping, simply add its respective mapping to the hash below
+            # 100 Continue
+            # 101 Switching Protocols
+    200: 0  # 200 OK
+    201: 0  # 201 Created
+    202: 0  # 202 Accepted
+            # 203 Non-Authoritative Information
+            # 204 No Content
+            # 205 Reset Content
+            # 206 Partial Content
+            # 300 Multiple Choices
+            # 301 Moved Permanently
+            # 302 Found
+            # 303 See Other
+            # 304 Not Modified
+            # 305 Use Proxy
+            # 306 (Unused)
+            # 307 Temporary Redirect
+    400: 1  # 400 Bad Request
+    401: 1  # 401 Unauthorized
+            # 402 Payment Required
+    403: 1  # 403 Forbidden
+    404: 1  # 404 Not Found
+            # 405 Method Not Allowed
+            # 406 Not Acceptable
+            # 407 Proxy Authentication Required
+            # 408 Request Timeout
+    409: 1  # 409 Conflict
+            # 410 Gone
+            # 411 Length Required
+            # 412 Precondition Failed
+            # 413 Request Entity Too Large
+            # 414 Request-URI Too Long
+            # 415 Unsupported Media Type
+            # 416 Requested Range Not Satisfiable
+            # 417 Expectation Failed
+    500: 2  # 500 Internal Server Error
+    501: 2  # 501 Not Implemented
+            # 502 Bad Gateway
+    503: 2  # 503 Service Unavailable
+            # 504 Gateway Timeout
+            # 505 HTTP Version Not Supported
+default_exit_code: 3 # This value is used in the event that there is no exit code mapping for the HTTP response received

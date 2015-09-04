@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+#-*- mode: CPerl;-*-
+
+=head1 NAME
+
+venn command
+
+=head1 AUTHOR
+
+Venn Engineering
+
+Josh Arenberg, Norbert Csongradi, Ryan Kupfer, Hai-Long Nguyen
+
+=head1 LICENSE
+
+Copyright 2013,2014,2015 Morgan Stanley
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=cut
+
+use v5.14;
+use warnings;
+
+use FindBin;
+use lib "$FindBin::RealBin/../lib";
+use Venn::CLI::Dependencies;
+use Venn::CLI;
+use Try::Tiny;
+use Data::Dumper;
+use Scalar::Util qw(blessed reftype);
+
+# Create an instance of the CLI, extended by MouseX::App::Cmd and using a default config file applied by Config::Any
+my $app = Venn::CLI->new();
+
+try {
+    $app->run(); # The run() subroutine is provided by App::Cmd behind the scenes
+} catch {
+    my ($command) = $app->get_command(@ARGV);
+    $_ =~ s/call to \(eval\)/call to '$command'/g; # fix (eval) bug in error messages
+    if ($_ =~ /Attribute \((.*?)\) does not pass/) {
+        # Handle option value-related warnings intelligently
+        my $option = $1;
+        warn "ERROR: Invalid value for $option\n";
+        if ($_ =~ /App::Cmd::Command::prepare\('(?<package>.*?)'/) {
+            my $package = $+{'package'};
+            if (eval { $package->can('meta') }) {
+                if (defined $package->meta->get_attribute($option)->{'documentation'}) {
+                    #my @list = $package->meta->get_attribute_list();
+                    #print Dumper(@list);
+                    die "--> Help for option '$option': ", $package->meta->get_attribute($option)->{'documentation'}, "\n";
+                }
+                # Call help for specified attribute
+            }
+        }
+    } else {
+        say "ERROR: $_";
+    }
+
+    exit 1;
+};
